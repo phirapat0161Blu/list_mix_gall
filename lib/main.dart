@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import 'components/drawer.dart';   // ดึง Drawer จากโฟลเดอร์ components
+import 'gallery.dart';             // หน้าแกลเลอรี
+import 'profile_page.dart';        // หน้าโปรไฟล์         
 
 void main() {
   runApp(const MainApp());
@@ -9,133 +14,154 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> imageList = [
-      'assets/images/p1.png',
-      'assets/images/p2.png',
-      'assets/images/p3.png',
-      'assets/images/p4.png',
-      'assets/images/p5.png',
-      'assets/images/p6.png',
-      'assets/images/p7.png',
-      'assets/images/p8.png',
+    // รายการรูปภาพ โหลดเป็น Image widgets
+    final imageList = <Image>[
+      Image.asset('assets/images/p1.png'),
+      Image.asset('assets/images/p2.png'),
+      Image.asset('assets/images/p3.png'),
+      Image.asset('assets/images/p4.png'),
+      Image.asset('assets/images/p5.png'),
+      Image.asset('assets/images/p6.png'),
+      Image.asset('assets/images/p7.png'),
+      Image.asset('assets/images/p8.png'),
+      Image.asset('assets/images/p9.png'),
+      Image.asset('assets/images/p10.png'),
     ];
 
-    final theme = ThemeData(
-      primaryColor: Colors.blue,
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: Colors.blue,
-        primary: Colors.blue,
-        secondary: const Color.fromARGB(255, 161, 245, 252),
-        background: Colors.white,
-      ),
-      fontFamily: 'Montserrat',
-      textTheme: const TextTheme(
-        bodyMedium: TextStyle(fontSize: 16),
-        titleLarge: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-      ),
-      appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-        elevation: 4,
-      ),
-    );
-
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: theme,
       home: Scaffold(
-        backgroundColor: theme.colorScheme.background,
         appBar: AppBar(
-          title: const Text('My listmix'),
-          centerTitle: true,
+          title: const Text("My app"),
+          backgroundColor: const Color.fromARGB(255, 131, 229, 249),
+          leading: Builder(
+            builder: (context) => IconButton(
+              icon: const Icon(Icons.menu),
+              onPressed: () => Scaffold.of(context).openDrawer(),
+            ),
+          ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              Text(
-                'Gallery',
-                style: theme.textTheme.titleLarge!.copyWith(
-                  color: theme.colorScheme.secondary,
+        drawer: const MyDrawer(),  // ใช้ Drawer ที่สร้างไว้ใน components
+        body: Column(
+          children: [
+            const SizedBox(height: 10),
+
+            // แถวหัวข้อ + ปุ่ม "รายการทั้งหมด" ไป Gallery
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(left: 16),
+                  child: Text(
+                    'รายการ',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 12),
-              Expanded(
-                flex: 1,
+                TextButton(
+                  onPressed: () {
+                    Get.to(() => const GalleryPage());
+                    print("clicked to gallery");
+                  },
+                  child: const Text(
+                    'รายการทั้งหมด',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 87, 164, 231),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            // Grid แสดงรูปภาพ p1 - p10
+            Expanded(
+              flex: 2,
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
                 child: GridView.builder(
+                  itemCount: imageList.length,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
-                    mainAxisSpacing: 12,
-                    crossAxisSpacing: 12,
-                    childAspectRatio: 1,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
                   ),
-                  itemCount: imageList.length,
-                  itemBuilder: (context, index) {
-                    return Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      clipBehavior: Clip.antiAlias,
-                      child: Image.asset(
-                        imageList[index],
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            color: const Color.fromARGB(255, 206, 240, 255),
-                            alignment: Alignment.center,
-                            child: Text(
-                              'No Image',
-                              style: TextStyle(
-                                color: const Color.fromARGB(255, 80, 182, 255),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
+                  itemBuilder: (BuildContext context, int index) {
+                    return ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: imageList[index],
                     );
                   },
                 ),
               ),
-              const SizedBox(height: 24),
-              Text(
-                'List Items',
-                style: theme.textTheme.titleLarge!.copyWith(
-                  color: Colors.black,
+            ),
+
+            // แถวหัวข้อ + ปุ่ม "รายการทั้งหมด" ไป ProfilePage
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(left: 16),
+                  child: Text(
+                    'รายการ',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 12),
-              Expanded(
-                flex: 2,
-                child: ListView.builder(
-                  itemCount: 100,
-                  itemBuilder: (context, index) {
-                    return Card(
-                      elevation: 4,
-                      margin: const EdgeInsets.symmetric(vertical: 8),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                TextButton(
+                  onPressed: () {
+                    Get.to(() => const ProfilePage());
+                    print("clicked to profile page");
+                  },
+                  child: const Text(
+                    'โปรไฟล์',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 2, 80, 148),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 10),
+
+            // ListView แสดงตัวเลข 0-99 ในกล่องสวยๆ
+            Expanded(
+              flex: 2,
+              child: ListView.builder(
+                itemCount: 100,
+                itemBuilder: (context, index) {
+                  return Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFE0F7FA),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: const Color.fromARGB(255, 135, 162, 244),
+                        width: 2,
                       ),
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: theme.colorScheme.secondary,
-                          child: Text(
-                            '${index + 1}',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color.fromARGB(255, 149, 214, 252).withOpacity(0.2),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: const Offset(0, 3),
                         ),
-                        title: Text('Item $index', style: theme.textTheme.bodyMedium),
-                        onTap: () {},
+                      ],
+                    ),
+                    child: ListTile(
+                      title: Text(
+                        "$index",
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
-                    );
-                  },
-                ),
+                      tileColor: Colors.transparent,
+                    ),
+                  );
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

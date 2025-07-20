@@ -9,6 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  get: ^4.7.2
 
 dev_dependencies:
   flutter_test:
@@ -27,4 +28,6 @@ flutter:
     - assets/images/p6.png
     - assets/images/p7.png
     - assets/images/p8.png
+    - assets/images/p9.png
+    - assets/images/p10.png
 
